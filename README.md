@@ -1,6 +1,7 @@
 # Binary Mixtures of Linear Models
 
 [![Build Status](https://travis-ci.org/SWotherspoon/bmixlm.svg?branch=master)](https://travis-ci.org/SWotherspoon/bmixlm)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/SWotherspoon/bmixlm?branch=master&svg=true)](https://ci.appveyor.com/project/SWotherspoon/bmixlm)
 
 Fit a binary mixture of linear models by Gibbs sampling.  Assumes
 responses are drawn two subpopulations, each described by a different
