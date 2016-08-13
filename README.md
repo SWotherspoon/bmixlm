@@ -1,6 +1,6 @@
 # Binary Mixtures of Linear Models
 
-[![Travis-CI Build Status](https://travis-ci.org/.svg?branch=master)](https://travis-ci.org/)
+[![Build Status](https://travis-ci.org/SWotherspoon/bmixlm.svg?branch=master)](https://travis-ci.org/SWotherspoon/bmixlm)
 
 Fit a binary mixture of linear models by Gibbs sampling.  Assumes
 responses are drawn two subpopulations, each described by a different
