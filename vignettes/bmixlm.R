@@ -1,0 +1,136 @@
+## ------------------------------------------------------------------------
+## Generate 7 uniformly distributed covariates
+set.seed(31)
+d <- as.data.frame(matrix(runif(1000*7),1000,7))
+colnames(d) <- letters[seq_along(d)]
+
+## ------------------------------------------------------------------------
+## Generate responses from the two models
+sigma <- c(0.4,0.6)
+beta1 <- c(runif(1,-0.4,0.4),rnorm(3))
+y1 <- model.matrix(~a+b+c,d)%*%beta1+rnorm(nrow(d),0,sigma[1])
+beta2 <- c(runif(1,-0.4,0.4),rnorm(3))
+y2 <- model.matrix(~c+d+e,d)%*%beta2+rnorm(nrow(d),0,sigma[2])
+
+## ------------------------------------------------------------------------
+## Draw the observed response from one model or the other
+betap <- c(0,1,-1)
+p <- pnorm(model.matrix(~f+g,d)%*%betap)
+b <- rbinom(nrow(d),1,p)
+d$y <- ifelse(b==0,y1,y2)
+
+## ----fig.height=5,fig.width=6--------------------------------------------
+## Show the two components and the mixture
+library(ggplot2)
+ggplot(data.frame(comp=factor(c(b+1,rep("mixture",nrow(d)))),
+                  y=c(d$y,d$y)),
+       aes(x=y,group=comp,colour=comp))+
+  geom_density()
+
+## ------------------------------------------------------------------------
+## Draw a burnin sample
+library(bmixlm)
+fit <- bmixlm(y~a+b+c,y~c+d+e,~f+g,data=d,nsamp=100)
+
+## ----fig.height=5,fig.width=6--------------------------------------------
+## Traceplots
+plot(fit,which="comp1")
+plot(fit,which="comp2")
+plot(fit,which="probit")
+plot(fit,which="error")
+
+## ------------------------------------------------------------------------
+## Draw a larger sample
+fit <- update(fit,nsamp=2000)
+summary(fit)
+
+## ----fig.height=5,fig.width=6--------------------------------------------
+## Traceplots
+plot(fit,which="comp1")
+plot(fit,which="comp2")
+plot(fit,which="probit")
+plot(fit,which="error")
+
+## ------------------------------------------------------------------------
+## Fitted values, residuals, and probability of component membership
+d.pr <- predictAll(fit)
+head(d.pr)
+
+## ----fig.height=5,fig.width=6--------------------------------------------
+## Residuals vs fitted values
+d.rf <- data.frame(comp=rep(1:2,each=nrow(d.pr)),
+                   fitted=c(d.pr$y1,d.pr$y2),
+                   residual=c(d.pr$r1,d.pr$r2),
+                   prob=c(1-d.pr$q,d.pr$q))
+library(ggplot2)
+ggplot(d.rf[order(d.rf$prob),],
+       aes(x=fitted,y=residual,colour=prob)) +
+  geom_point(size=1)+
+  facet_wrap(~comp,ncol=1)
+
+## ----fig.height=5,fig.width=6--------------------------------------------
+cl <- classify(fit)
+library(ggplot2)
+ggplot(data.frame(comp=factor(c(ifelse(cl$q < 0.5,"1","2"),
+                                rep("mixture",nrow(d)))),
+                  y=rep(d$y,2)),
+       aes(x=y,group=comp,colour=comp))+
+  geom_density()
+
+## ----fig.height=5,fig.width=6--------------------------------------------
+pairs(rbind(coef(fit,which="comp1",type="samples"),
+            coef(fit,which="comp1",type="mean"),
+            beta1),pch=16,cex=rep(c(0.7,1),c(fit$nsamp,2)),
+      col=rep(c(alpha("black",0.05),alpha("orange",1),alpha("red",1)),c(fit$nsamp,1,1)),
+      main="comp1")
+pairs(rbind(coef(fit,which="comp2",type="samples"),
+            coef(fit,which="comp2",type="mean"),
+            beta2),pch=16,cex=rep(c(0.7,1),c(fit$nsamp,2)),
+      col=rep(c(alpha("black",0.05),alpha("orange",1),alpha("red",1)),c(fit$nsamp,1,1)),
+      main="comp2")
+pairs(rbind(coef(fit,which="probit",type="samples"),
+            coef(fit,which="probit",type="mean"),
+            betap),pch=16,cex=rep(c(0.7,1),c(fit$nsamp,2)),
+      col=rep(c(alpha("black",0.05),alpha("orange",1),alpha("red",1)),c(fit$nsamp,1,1)),
+      main="probit")
+pairs(rbind(coef(fit,which="error",type="samples"),
+            coef(fit,which="error",type="mean"),
+            sigma),pch=16,cex=rep(c(0.7,1),c(fit$nsamp,2)),
+      col=rep(c(alpha("black",0.05),alpha("orange",1),alpha("red",1)),c(fit$nsamp,1,1)),
+      main="error")
+
+## ----fig.height=5,fig.width=6--------------------------------------------
+library(ggplot2)
+ggplot(data.frame(comp=factor(b+1),prob=d.pr$q),
+       aes(x=prob,group=comp,colour=comp))+
+  geom_density()+
+  xlab("Pr comp 2")
+
+## ------------------------------------------------------------------------
+## Fit a simple two component mixture
+fit0 <- bmixlm(y~1,y~1,~1,data=d,nsamp=100)
+fit0 <- update(fit0,nsamp=2000)
+summary(fit0)
+
+## ------------------------------------------------------------------------
+ys <- simulate(fit,nsim=500)
+
+## ----fig.height=5,fig.width=6--------------------------------------------
+cl <- classify(fit)
+d.pr <- as.data.frame(t(apply(ys,1,quantile,prob=c(0.025,0.5,0.975))))
+d.pr <-cbind(d.pr,y=d$y,x=order(order(d.pr$`50%`)),cert=pmax(cl$q,1-cl$q))
+library(ggplot2)
+ggplot(d.pr,aes(x=x,y=y,ymin=`2.5%`,ymax=`97.5%`,colour=cert))+
+  geom_ribbon(col="grey80",fill="grey80")+
+  geom_point(size=1)
+
+## ----fig.height=5,fig.width=6--------------------------------------------
+ys <- simulate(fit0,nsim=500)
+cl <- classify(fit0)
+d.pr <- as.data.frame(t(apply(ys,1,quantile,prob=c(0.025,0.5,0.975))))
+d.pr <-cbind(d.pr,y=d$y,x=order(order(d.pr$`50%`)),cert=pmax(cl$q,1-cl$q))
+library(ggplot2)
+ggplot(d.pr,aes(x=x,y=y,ymin=`2.5%`,ymax=`97.5%`,colour=cert))+
+  geom_ribbon(col="grey80",fill="grey80")+
+  geom_point(size=1)
+
