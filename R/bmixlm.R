@@ -82,7 +82,7 @@ bmixlm <- function(formula1,formula2,formulap,data,
   mf <- model.frame(formulap,data)
   Xp <- model.matrix(formulap,mf)
 
-  if(any(y1!=y2)) stop("Formulae should have same response")
+  if(any(y1!=y2) || is.null(y1)) stop("Component formulae should have identical non-null responses")
 
   ## Initialize storage
   Beta1 <- matrix(0,nsamp,ncol(X1),dimnames=list(NULL,colnames(X1)))
