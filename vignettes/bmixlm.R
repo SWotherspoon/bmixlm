@@ -1,3 +1,6 @@
+## ----setup, include=FALSE------------------------------------------------
+knitr::opts_chunk$set(echo=TRUE,fig.width=6,fig.height=5)
+
 ## ------------------------------------------------------------------------
 ## Generate 7 uniformly distributed covariates
 set.seed(31)
@@ -19,7 +22,7 @@ p <- pnorm(model.matrix(~f+g,d)%*%betap)
 b <- rbinom(nrow(d),1,p)
 d$y <- ifelse(b==0,y1,y2)
 
-## ----fig.height=5,fig.width=6--------------------------------------------
+## ------------------------------------------------------------------------
 ## Show the two components and the mixture
 library(ggplot2)
 ggplot(data.frame(comp=factor(c(b+1,rep("mixture",nrow(d)))),
@@ -32,7 +35,7 @@ ggplot(data.frame(comp=factor(c(b+1,rep("mixture",nrow(d)))),
 library(bmixlm)
 fit <- bmixlm(y~a+b+c,y~c+d+e,~f+g,data=d,nsamp=100)
 
-## ----fig.height=5,fig.width=6--------------------------------------------
+## ------------------------------------------------------------------------
 ## Traceplots
 plot(fit,which="comp1")
 plot(fit,which="comp2")
@@ -44,7 +47,13 @@ plot(fit,which="error")
 fit <- update(fit,nsamp=2000)
 summary(fit)
 
-## ----fig.height=5,fig.width=6--------------------------------------------
+## ------------------------------------------------------------------------
+beta1
+beta2
+betap
+sigma
+
+## ------------------------------------------------------------------------
 ## Traceplots
 plot(fit,which="comp1")
 plot(fit,which="comp2")
@@ -56,7 +65,7 @@ plot(fit,which="error")
 d.pr <- predictAll(fit)
 head(d.pr)
 
-## ----fig.height=5,fig.width=6--------------------------------------------
+## ------------------------------------------------------------------------
 ## Residuals vs fitted values
 d.rf <- data.frame(comp=rep(1:2,each=nrow(d.pr)),
                    fitted=c(d.pr$y1,d.pr$y2),
@@ -68,7 +77,8 @@ ggplot(d.rf[order(d.rf$prob),],
   geom_point(size=1)+
   facet_wrap(~comp,ncol=1)
 
-## ----fig.height=5,fig.width=6--------------------------------------------
+## ------------------------------------------------------------------------
+## Decompose response into components
 cl <- classify(fit)
 library(ggplot2)
 ggplot(data.frame(comp=factor(c(ifelse(cl$q < 0.5,"1","2"),
@@ -77,45 +87,12 @@ ggplot(data.frame(comp=factor(c(ifelse(cl$q < 0.5,"1","2"),
        aes(x=y,group=comp,colour=comp))+
   geom_density()
 
-## ----fig.height=5,fig.width=6--------------------------------------------
-pairs(rbind(coef(fit,which="comp1",type="samples"),
-            coef(fit,which="comp1",type="mean"),
-            beta1),pch=16,cex=rep(c(0.7,1),c(fit$nsamp,2)),
-      col=rep(c(alpha("black",0.05),alpha("orange",1),alpha("red",1)),c(fit$nsamp,1,1)),
-      main="comp1")
-pairs(rbind(coef(fit,which="comp2",type="samples"),
-            coef(fit,which="comp2",type="mean"),
-            beta2),pch=16,cex=rep(c(0.7,1),c(fit$nsamp,2)),
-      col=rep(c(alpha("black",0.05),alpha("orange",1),alpha("red",1)),c(fit$nsamp,1,1)),
-      main="comp2")
-pairs(rbind(coef(fit,which="probit",type="samples"),
-            coef(fit,which="probit",type="mean"),
-            betap),pch=16,cex=rep(c(0.7,1),c(fit$nsamp,2)),
-      col=rep(c(alpha("black",0.05),alpha("orange",1),alpha("red",1)),c(fit$nsamp,1,1)),
-      main="probit")
-pairs(rbind(coef(fit,which="error",type="samples"),
-            coef(fit,which="error",type="mean"),
-            sigma),pch=16,cex=rep(c(0.7,1),c(fit$nsamp,2)),
-      col=rep(c(alpha("black",0.05),alpha("orange",1),alpha("red",1)),c(fit$nsamp,1,1)),
-      main="error")
-
-## ----fig.height=5,fig.width=6--------------------------------------------
-library(ggplot2)
-ggplot(data.frame(comp=factor(b+1),prob=d.pr$q),
-       aes(x=prob,group=comp,colour=comp))+
-  geom_density()+
-  xlab("Pr comp 2")
-
 ## ------------------------------------------------------------------------
-## Fit a simple two component mixture
-fit0 <- bmixlm(y~1,y~1,~1,data=d,nsamp=100)
-fit0 <- update(fit0,nsamp=2000)
-summary(fit0)
-
-## ------------------------------------------------------------------------
+## Simulate from posterior predictive distribution
 ys <- simulate(fit,nsim=500)
 
-## ----fig.height=5,fig.width=6--------------------------------------------
+## ------------------------------------------------------------------------
+## Show observations against simulations
 cl <- classify(fit)
 d.pr <- as.data.frame(t(apply(ys,1,quantile,prob=c(0.025,0.5,0.975))))
 d.pr <-cbind(d.pr,y=d$y,x=order(order(d.pr$`50%`)),cert=pmax(cl$q,1-cl$q))
@@ -124,13 +101,40 @@ ggplot(d.pr,aes(x=x,y=y,ymin=`2.5%`,ymax=`97.5%`,colour=cert))+
   geom_ribbon(col="grey80",fill="grey80")+
   geom_point(size=1)
 
-## ----fig.height=5,fig.width=6--------------------------------------------
-ys <- simulate(fit0,nsim=500)
-cl <- classify(fit0)
-d.pr <- as.data.frame(t(apply(ys,1,quantile,prob=c(0.025,0.5,0.975))))
-d.pr <-cbind(d.pr,y=d$y,x=order(order(d.pr$`50%`)),cert=pmax(cl$q,1-cl$q))
-library(ggplot2)
-ggplot(d.pr,aes(x=x,y=y,ymin=`2.5%`,ymax=`97.5%`,colour=cert))+
-  geom_ribbon(col="grey80",fill="grey80")+
-  geom_point(size=1)
+## ------------------------------------------------------------------------
+## Fit a simple two component mixture
+fit0 <- bmixlm(y~1,y~1,~1,data=d,nsamp=100)
+fit0 <- update(fit0,nsamp=2000)
+summary(fit0)
+
+## ------------------------------------------------------------------------
+fit1 <- update(fit,formula1=y~a+b,nsamp=100)
+fit1 <- update(fit1,nsamp=2000)
+summary(fit1)
+
+## ------------------------------------------------------------------------
+fit2 <- update(fit,formula1=y~a+b+c+d,nsamp=100)
+fit2 <- update(fit2,nsamp=2000)
+summary(fit2)
+
+## ------------------------------------------------------------------------
+fit3 <- update(fit,formula2=y~d+e,nsamp=100)
+fit3 <- update(fit3,nsamp=2000)
+summary(fit3)
+
+## ------------------------------------------------------------------------
+## Draw a burnin sample
+fit0 <- bmixlm(y~a+b+c+e+f+g,y~b+c+d+e+f+g,~a+b+c+d+e+f+g,data=d,nsamp=100)
+fit0 <- update(fit0,nsamp=2000)
+summary(fit0)
+
+## ------------------------------------------------------------------------
+fit0 <- update(fit0,formula1=y~a+b+c,formula2=y~d+e,formulap=~f+g)
+summary(fit0)
+
+## ------------------------------------------------------------------------
+q <- classify(fit0)$q
+summary(step(lm(qnorm(q)~a+b+c+d+e+f+g,data=d),trace=FALSE))
+summary(step(lm(y~a+b+c+d+e+f+g,data=d[q<0.4,]),trace=FALSE))
+summary(step(lm(y~a+b+c+d+e+f+g,data=d[q>0.6,]),trace=FALSE))
 

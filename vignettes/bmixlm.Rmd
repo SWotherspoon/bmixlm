@@ -118,6 +118,14 @@ fit <- update(fit,nsamp=2000)
 summary(fit)
 ```
 
+The summary is consistent with the true parameter values
+```{r}
+beta1
+beta2
+betap
+sigma
+```
+
 Again examine traceplots
 ```{r}
 ## Traceplots
@@ -127,7 +135,7 @@ plot(fit,which="probit")
 plot(fit,which="error")
 ```
 
-Calculate a full range of fitted values
+The `predictAll` function calculates a full range of fitted values
 ```{r}
 ## Fitted values, residuals, and probability of component membership
 d.pr <- predictAll(fit)
@@ -172,45 +180,26 @@ ggplot(data.frame(comp=factor(c(ifelse(cl$q < 0.5,"1","2"),
   geom_density()
 ```
 
-
-
-## Validation
-
-Pairwise plots of the samples for each set of model coefficients, with the
-posterior mean shown in orange and the known true value red
+The `simulate` function simulates new observations from the posterior
+predictive distribution
 ```{r}
-## Compare samples to known parameter values
-pairs(rbind(coef(fit,which="comp1",type="samples"),
-            coef(fit,which="comp1",type="mean"),
-            beta1),pch=16,cex=rep(c(0.7,1),c(fit$nsamp,2)),
-      col=rep(c(alpha("black",0.05),alpha("orange",1),alpha("red",1)),c(fit$nsamp,1,1)),
-      main="comp1")
-pairs(rbind(coef(fit,which="comp2",type="samples"),
-            coef(fit,which="comp2",type="mean"),
-            beta2),pch=16,cex=rep(c(0.7,1),c(fit$nsamp,2)),
-      col=rep(c(alpha("black",0.05),alpha("orange",1),alpha("red",1)),c(fit$nsamp,1,1)),
-      main="comp2")
-pairs(rbind(coef(fit,which="probit",type="samples"),
-            coef(fit,which="probit",type="mean"),
-            betap),pch=16,cex=rep(c(0.7,1),c(fit$nsamp,2)),
-      col=rep(c(alpha("black",0.05),alpha("orange",1),alpha("red",1)),c(fit$nsamp,1,1)),
-      main="probit")
-pairs(rbind(coef(fit,which="error",type="samples"),
-            coef(fit,which="error",type="mean"),
-            sigma),pch=16,cex=rep(c(0.7,1),c(fit$nsamp,2)),
-      col=rep(c(alpha("black",0.05),alpha("orange",1),alpha("red",1)),c(fit$nsamp,1,1)),
-      main="error")
+## Simulate from posterior predictive distribution
+ys <- simulate(fit,nsim=500)
 ```
 
-Compare the distribution of predicted probabilities of component
-membership by the known membership
+The fit of the model can be assessed by fitting the original
+observations against the 95% credible interval generated from the
+posterior predictive distribution, coloured by the certainty of
+component membership
 ```{r}
-## Compare estimated and known component membership
+## Show observations against simulations
+cl <- classify(fit)
+d.pr <- as.data.frame(t(apply(ys,1,quantile,prob=c(0.025,0.5,0.975))))
+d.pr <-cbind(d.pr,y=d$y,x=order(order(d.pr$`50%`)),cert=pmax(cl$q,1-cl$q))
 library(ggplot2)
-ggplot(data.frame(comp=factor(b+1),prob=d.pr$q),
-       aes(x=prob,group=comp,colour=comp))+
-  geom_density()+
-  xlab("Pr comp 2")
+ggplot(d.pr,aes(x=x,y=y,ymin=`2.5%`,ymax=`97.5%`,colour=cert))+
+  geom_ribbon(col="grey80",fill="grey80")+
+  geom_point(size=1)
 ```
 
 
@@ -228,41 +217,65 @@ Models in which the linear models for the two components depend on
 identical sets of covariates must be interpreted with care.  When there
 is nothing to distinguish the models for the two components, the two
 components become interchangeable and the model is subject to the
-relabelling problem common to MCMC treatments of simple mixture models.
+relabelling problem common to MCMC treatments of simple mixture
+models.
 
 
-## Simulation
+## WAIC
 
-Simulate new observations from the posterior predictive distribution
+Models can be compared based on WAIC. If an important covariate is
+removed from the model, typically the WAIC increases substantially.
 ```{r}
-## Simulate from posterior predictive distribution
-ys <- simulate(fit,nsim=500)
+fit1 <- update(fit,formula1=y~a+b,nsamp=100)
+fit1 <- update(fit1,nsamp=2000)
+summary(fit1)
 ```
 
-Plot the original observations against the 95% credible interval
-generated from the posterior predictive distribution, coloured by the
-certainty of component membership
+But when an additional covariate is included in the model the change
+in WAIC is more subtle
 ```{r}
-## Show observations against simulations
-cl <- classify(fit)
-d.pr <- as.data.frame(t(apply(ys,1,quantile,prob=c(0.025,0.5,0.975))))
-d.pr <-cbind(d.pr,y=d$y,x=order(order(d.pr$`50%`)),cert=pmax(cl$q,1-cl$q))
-library(ggplot2)
-ggplot(d.pr,aes(x=x,y=y,ymin=`2.5%`,ymax=`97.5%`,colour=cert))+
-  geom_ribbon(col="grey80",fill="grey80")+
-  geom_point(size=1)
+fit2 <- update(fit,formula1=y~a+b+c+d,nsamp=100)
+fit2 <- update(fit2,nsamp=2000)
+summary(fit2)
 ```
 
-The equivalent plot for the simple two component mixture
-model suggests the simpler model does not fit
+The summary table for the original fit suggests c may not be required
+in the model for the second component. However if this term is deleted
+the WAIC increases, suggsting this term should be retained
 ```{r}
-## Observations against simulations for simple mixture
-ys <- simulate(fit0,nsim=500)
-cl <- classify(fit0)
-d.pr <- as.data.frame(t(apply(ys,1,quantile,prob=c(0.025,0.5,0.975))))
-d.pr <-cbind(d.pr,y=d$y,x=order(order(d.pr$`50%`)),cert=pmax(cl$q,1-cl$q))
-library(ggplot2)
-ggplot(d.pr,aes(x=x,y=y,ymin=`2.5%`,ymax=`97.5%`,colour=cert))+
-  geom_ribbon(col="grey80",fill="grey80")+
-  geom_point(size=1)
+fit3 <- update(fit,formula2=y~d+e,nsamp=100)
+fit3 <- update(fit3,nsamp=2000)
+summary(fit3)
 ```
+
+
+## Model Building
+
+One approach to model building is to fit almost full models for each
+component, ensuring that the two component models differ so that the
+components are differentiated
+```{r}
+## Draw a burnin sample
+fit0 <- bmixlm(y~a+b+c+e+f+g,y~b+c+d+e+f+g,~a+b+c+d+e+f+g,data=d,nsamp=100)
+fit0 <- update(fit0,nsamp=2000)
+summary(fit0)
+```
+
+and then form a baseline model by deleting terms for which there is
+not strong evidence
+```{r}
+fit0 <- update(fit0,formula1=y~a+b+c,formula2=y~d+e,formulap=~f+g)
+summary(fit0)
+```
+
+Alternately, given a reasonable initial model, the data can be
+classified into the two  components and classical techniques used to
+suggest terms for the model components
+```{r}
+q <- classify(fit0)$q
+summary(step(lm(qnorm(q)~a+b+c+d+e+f+g,data=d),trace=FALSE))
+summary(step(lm(y~a+b+c+d+e+f+g,data=d[q<0.4,]),trace=FALSE))
+summary(step(lm(y~a+b+c+d+e+f+g,data=d[q>0.6,]),trace=FALSE))
+```
+
+
