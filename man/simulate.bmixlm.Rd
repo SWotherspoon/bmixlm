@@ -27,6 +27,6 @@ distribution.
 If \code{nsim} is not \code{NULL}, \code{update} is called to
 generate \code{nsim} new samples from the posterior, and new
 observations are generated from these. Otherwise new observations
-are gnerated from the samples contained in the fitted object.
+are generated from the samples contained in the fitted object.
 }
 

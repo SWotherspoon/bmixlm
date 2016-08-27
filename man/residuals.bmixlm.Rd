@@ -10,22 +10,24 @@
 \arguments{
 \item{object}{An object of class \code{bmixlm}}
 
-\item{type}{Whether to return the posterior mean or samples from the posterior.}
+\item{type}{Whether to return the posterior mean or samples from
+the posterior.}
 
 \item{standardize}{Whether to standardize the residuals.}
 
 \item{...}{Currently unused.}
 }
 \value{
-Returns a list or datafame with elements
+Returns a list or dataframe with elements
 \item{\code{y1}}{residuals for the first component model}
 \item{\code{y2}}{residuals for the second component model}
-\item{\code{p}}{probabilities of membership of the second component}
-\item{\code{q}}{probabilities of membership of the second component,
-conditional on the observed response}
+\item{\code{p}}{posterior predictive probabilities of membership
+of the second component}
+\item{\code{q}}{posterior probabilities of membership of the
+second component}
 \item{\code{b}}{binary indicators of membership of the second component,
 conditional on the observed response}
-If \code{type="mean"} return a datafame of posterior means is
+If \code{type="mean"} return a dataframe of posterior means is
 returned, and if \code{type="samples"} return a list of arrays of
 samples from the posterior.
 }

@@ -35,6 +35,6 @@ these matrices is returned:
 
 If a dataframe is supplied via the \code{data} argument, it is
 used to construct the model matrix, otherwise the model matrix is
-consructed from the data used to generate the fitted object
+constructed from the data used to generate the fitted object
 }
 
