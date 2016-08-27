@@ -245,7 +245,7 @@ print.summary.bmixlm <- function(x,digits=max(3L,getOption("digits")-3L),...) {
 ##' Updates and optionally refits a \code{\link{bmixlm}} fit.
 ##'
 ##' If the \code{betap} and \code{sigma} arguments are not specified,
-##' they are determined from the exisiting fit.
+##' they are determined from the existing fit.
 ##'
 ##' @title Update and Refit a \code{bmixlm} Model
 ##' @param object An object of class \code{\link{bmixlm}}
@@ -324,7 +324,7 @@ coef.bmixlm <- function(object,
 ##'
 ##' If a dataframe is supplied via the \code{data} argument, it is
 ##' used to construct the model matrix, otherwise the model matrix is
-##' consructed from the data used to generate the fitted object
+##' constructed from the data used to generate the fitted object
 ##'
 ##' @title Model matrices for a \code{bmixlm} Object
 ##' @param object An object of class \code{bmixlm}
@@ -355,8 +355,8 @@ model.matrix.bmixlm <- function(object,which=c("probit","comp1","comp2"),data=NU
 ##' only on the responses for the data to which the model is fitted:
 ##' \itemize{
 ##'   \item the predicted values for the two component linear models
-##'   \item the probability p of membership of the second component,
-##'   independent of the observed response in the prediction data set
+##'   \item the posterior predictive probability p of membership of
+##'   the second component
 ##' }
 ##' together with the predicted values conditional on the responses
 ##' from both the data to which the model is fitted, and the
@@ -364,29 +364,36 @@ model.matrix.bmixlm <- function(object,which=c("probit","comp1","comp2"),data=NU
 ##' \itemize{
 ##'   \item the residuals or prediction error given the observed
 ##'   response in the prediction data
-##'   \item the probability q of membership of the second component,
-##'   conditional on the observed response in the prediction data set
+##'   \item the posterior probability q of membership of the second
+##'   component,
 ##' }
+##' The posterior predictive probability p predicts the probability
+##' that a new response will be drawn from the second component, the
+##' posterior probability q predicts the probability that the observed
+##' response was drawn from the second component.
+##'
 ##' If \code{type="mean"} the function returns posterior means as a
 ##' dataframe, otherwise it returns samples from the posterior as a
 ##' list of arrays.
 ##'
 ##' @title Predicted Values for a \code{bmixlm} Object
 ##' @param object An object of class \code{bmixlm}
-##' @param type Whether to return the posterior means or samples from the posterior.
+##' @param type Whether to return the posterior means or samples from
+##' the posterior.
 ##' @param data A dataframe for which predictions are required
 ##' @param standardize Whether to standardize the residuals.
 ##' @param ... Currently unused.
-##' @return Returns a list or datafame with elements
+##' @return Returns a list or dataframe with elements
 ##' \item{\code{y}}{vector of responses from data}
 ##' \item{\code{y1}}{predicted values for the first component model}
 ##' \item{\code{y2}}{predicted values for the second component model}
 ##' \item{\code{r1}}{residuals for the first component model}
 ##' \item{\code{r2}}{residuals for the second component model}
-##' \item{\code{p}}{probabilities of membership of the second component}
-##' \item{\code{q}}{probabilities of membership of the second component,
-##' conditional on the observed response}
-##' If \code{type="mean"} return a datafame of posterior means is
+##' \item{\code{p}}{posterior predictive probabilities of membership
+##' of the second component}
+##' \item{\code{q}}{posterior probabilities of membership of the
+##' second component}
+##' If \code{type="mean"} return a dataframe of posterior means is
 ##' returned, and if \code{type="samples"} return a list of arrays of
 ##' samples from the posterior.
 ##' @importFrom stats as.formula model.frame model.matrix model.response dnorm pnorm
@@ -402,45 +409,42 @@ predictAll <- function(object,type=c("mean","samples"),data=NULL,standardize=FAL
   X <- model.matrix(formula,mf)
   yhat1 <- X%*%t(object$beta1)
   y1 <- model.response(mf)
-  r1 <- y1-yhat1
-  if(standardize) r1 <- r1/rep.int(sigma[,1],rep.int(length(r1),nrow(sigma)))
+  if(!is.null(y1)) {
+    r1 <- y1-yhat1
+    if(standardize) r1 <- r1/rep.int(sigma[,1],rep.int(length(r1),nrow(sigma)))
+  }
 
   formula <- as.formula(object$call$formula2)
   mf <- model.frame(formula,data)
   X <- model.matrix(formula,mf)
   yhat2 <- X%*%t(object$beta2)
   y2 <- model.response(mf)
-  r2 <- y2-yhat2
-  if(standardize) r2 <- r2/rep.int(sigma[,2],rep.int(length(r2),nrow(sigma)))
+  if(!is.null(y2)) {
+    r2 <- y2-yhat2
+    if(standardize) r2 <- r2/rep.int(sigma[,2],rep.int(length(r2),nrow(sigma)))
+  }
 
   formula <- as.formula(object$call$formulap)
   mf <- model.frame(formula,data)
   X <- model.matrix(formula,mf)
   p <- pnorm(X%*%t(object$betap))
-  f1 <- (1-p)*dnorm(y1,yhat1,rep.int(sigma[,1],rep.int(nrow(p),nrow(sigma))))
-  f2 <- p*dnorm(y2,yhat2,rep.int(sigma[,2],rep.int(nrow(p),nrow(sigma))))
-  q <- f2/(f1+f2)
+  if(!is.null(y1) && !is.null(y2)) {
+    f1 <- (1-p)*dnorm(y1,yhat1,rep.int(sigma[,1],rep.int(nrow(p),nrow(sigma))))
+    f2 <- p*dnorm(y2,yhat2,rep.int(sigma[,2],rep.int(nrow(p),nrow(sigma))))
+    q <- f2/(f1+f2)
+  }
 
   switch(type,
-         mean=data.frame(y=y1,
-                         y1=rowMeans(yhat1),
-                         y2=rowMeans(yhat2),
-                         r1=rowMeans(r1),
-                         r2=rowMeans(r2),
-                         p=rowMeans(p),
-                         q=rowMeans(q)),
-         samples=list(y=y1,
-                      y1=yhat1,
-                      y2=yhat2,
-                      r1=r1,
-                      r2=r2,
-                      p=p,
-                      q=q))
+         mean=if(is.null(y1) || is.null(y2))
+                data.frame(y1=rowMeans(yhat1),y2=rowMeans(yhat2),p=rowMeans(p))
+              else
+                data.frame(y=y1,y1=rowMeans(yhat1),y2=rowMeans(yhat2),
+                           r1=rowMeans(r1),r2=rowMeans(r2),p=rowMeans(p),q=rowMeans(q)),
+         samples=if(is.null(y1) || is.null(y2))
+                   list(y1=yhat1,y2=yhat2,p=p)
+                 else
+                   list(y=y1,y1=yhat1,y2=yhat2,r1=r1,r2=r2,p=p,q=q))
 }
-
-
-
-
 
 
 ##' Calculate the fitted values from the two component models, and the
@@ -455,11 +459,12 @@ predictAll <- function(object,type=c("mean","samples"),data=NULL,standardize=FAL
 ##' @param type Whether to return the posterior mean or samples from
 ##'   the posterior.
 ##' @param ... Currently unused.
-##' @return Returns a list or datafame with elements
+##' @return Returns a list or dataframe with elements
 ##' \item{\code{y1}}{predicted values for the first component model}
 ##' \item{\code{y2}}{predicted values for the second component model}
-##' \item{\code{p}}{probabilities of membership of the second component}
-##' If \code{type="mean"} return a datafame of posterior means is
+##' \item{\code{p}}{posterior predictive probabilities of membership
+##' of the second component}
+##' If \code{type="mean"} return a dataframe of posterior means is
 ##' returned, and if \code{type="samples"} return a list of arrays of
 ##' samples from the posterior.
 ##' @importFrom stats as.formula model.frame model.matrix pnorm
@@ -506,18 +511,20 @@ fitted.bmixlm <- function(object,type=c("mean","samples"),...) {
 ##'
 ##' @title Residuals for a \code{bmixlm} Object
 ##' @param object An object of class \code{bmixlm}
-##' @param type Whether to return the posterior mean or samples from the posterior.
+##' @param type Whether to return the posterior mean or samples from
+##' the posterior.
 ##' @param standardize Whether to standardize the residuals.
 ##' @param ... Currently unused.
-##' @return Returns a list or datafame with elements
+##' @return Returns a list or dataframe with elements
 ##' \item{\code{y1}}{residuals for the first component model}
 ##' \item{\code{y2}}{residuals for the second component model}
-##' \item{\code{p}}{probabilities of membership of the second component}
-##' \item{\code{q}}{probabilities of membership of the second component,
-##' conditional on the observed response}
+##' \item{\code{p}}{posterior predictive probabilities of membership
+##' of the second component}
+##' \item{\code{q}}{posterior probabilities of membership of the
+##' second component}
 ##' \item{\code{b}}{binary indicators of membership of the second component,
 ##' conditional on the observed response}
-##' If \code{type="mean"} return a datafame of posterior means is
+##' If \code{type="mean"} return a dataframe of posterior means is
 ##' returned, and if \code{type="samples"} return a list of arrays of
 ##' samples from the posterior.
 ##' @importFrom stats as.formula model.frame model.response model.matrix pnorm
@@ -578,13 +585,15 @@ residuals.bmixlm <- function(object,type=c("mean","samples"),standardize=FALSE,.
 ##' @title Predicted Values for a \code{bmixlm} Object
 ##' @param object An object of class \code{bmixlm}
 ##' @param newdata A dataframe for which predictions are required
-##' @param type Whether to return the posterior mean or samples from the posterior.
+##' @param type Whether to return the posterior mean or samples
+##' from the posterior.
 ##' @param ... Currently unused.
-##' @return Returns a list or datafame with elements
+##' @return Returns a list or dataframe with elements
 ##' \item{\code{y1}}{predicted values for the first component model}
 ##' \item{\code{y2}}{predicted values for the second component model}
-##' \item{\code{p}}{probabilities of membership of the second component}
-##' If \code{type="mean"} return a datafame of posterior means is
+##' \item{\code{p}}{posterior predictive probabilities of membership
+##' of the second component}
+##' If \code{type="mean"} return a dataframe of posterior means is
 ##' returned, and if \code{type="samples"} return a list of arrays of
 ##' samples from the posterior.
 ##' @importFrom stats as.formula model.frame model.matrix pnorm
@@ -668,12 +677,13 @@ as.matrix.bmixlm <- function(x,...) {
 ##'
 ##' For each row in the dataframe \code{data}, predict
 ##' \itemize{
-##'   \item \code{p}: the probability of membership of the second
-##'   component conditional only on the observed covariates in the
-##'   prediction data set
-##'   \item \code{p}: the probability of membership of the second
-##'   component conditional on both the observed response and
-##'   covariates in the prediction data set
+##'   \item \code{p}: the posterior predictive probability of
+##'   membership of the second component (conditional only on the
+##'   observed covariates in the prediction data set)
+##'
+##'   \item \code{p}: the posterior probability of membership of the
+##'   second component (conditional on both the observed response and
+##'   covariates in the prediction data set)
 ##' }
 ##' If \code{type="mean"} the function returns posterior means as a
 ##' dataframe, otherwise it returns samples from the posterior as a
@@ -681,12 +691,15 @@ as.matrix.bmixlm <- function(x,...) {
 ##'
 ##' @title Predicted Probabilities of Component Membership
 ##' @param object An object of class \code{bmixlm}
-##' @param type Whether to return the posterior means or samples from the posterior.
+##' @param type Whether to return the posterior means or samples
+##' from the posterior.
 ##' @param data A dataframe for which predictions are required.
-##' @return Returns a list or datafame with elements
-##' \item{\code{p}}{probabilities of membership of the second component}
-##' \item{\code{q}}{probabilities of membership of the second component, conditional on the observed response}
-##' If \code{type="mean"} return a datafame of posterior means is
+##' @return Returns a list or dataframe with elements
+##' \item{\code{p}}{posterior predictive probabilities of membership
+##' of the second component}
+##' \item{\code{q}}{posterior probabilities of membership of the
+##' second component}
+##' If \code{type="mean"} return a dataframe of posterior means is
 ##' returned, and if \code{type="samples"} return a list of arrays of
 ##' samples from the posterior.
 ##' @importFrom stats as.formula model.frame model.matrix model.response dnorm pnorm
@@ -730,7 +743,7 @@ classify <- function(object,type=c("mean","samples"),data=NULL) {
 ##' If \code{nsim} is not \code{NULL}, \code{update} is called to
 ##' generate \code{nsim} new samples from the posterior, and new
 ##' observations are generated from these. Otherwise new observations
-##' are gnerated from the samples contained in the fitted object.
+##' are generated from the samples contained in the fitted object.
 ##'
 ##' @title Simulate Responses from a \code{bmixlm} Object
 ##' @param object An object of class \code{bmixlm}.

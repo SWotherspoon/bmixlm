@@ -12,16 +12,18 @@
 
 \item{newdata}{A dataframe for which predictions are required}
 
-\item{type}{Whether to return the posterior mean or samples from the posterior.}
+\item{type}{Whether to return the posterior mean or samples
+from the posterior.}
 
 \item{...}{Currently unused.}
 }
 \value{
-Returns a list or datafame with elements
+Returns a list or dataframe with elements
 \item{\code{y1}}{predicted values for the first component model}
 \item{\code{y2}}{predicted values for the second component model}
-\item{\code{p}}{probabilities of membership of the second component}
-If \code{type="mean"} return a datafame of posterior means is
+\item{\code{p}}{posterior predictive probabilities of membership
+of the second component}
+If \code{type="mean"} return a dataframe of posterior means is
 returned, and if \code{type="samples"} return a list of arrays of
 samples from the posterior.
 }

@@ -9,15 +9,18 @@ classify(object, type = c("mean", "samples"), data = NULL)
 \arguments{
 \item{object}{An object of class \code{bmixlm}}
 
-\item{type}{Whether to return the posterior means or samples from the posterior.}
+\item{type}{Whether to return the posterior means or samples
+from the posterior.}
 
 \item{data}{A dataframe for which predictions are required.}
 }
 \value{
-Returns a list or datafame with elements
-\item{\code{p}}{probabilities of membership of the second component}
-\item{\code{q}}{probabilities of membership of the second component, conditional on the observed response}
-If \code{type="mean"} return a datafame of posterior means is
+Returns a list or dataframe with elements
+\item{\code{p}}{posterior predictive probabilities of membership
+of the second component}
+\item{\code{q}}{posterior probabilities of membership of the
+second component}
+If \code{type="mean"} return a dataframe of posterior means is
 returned, and if \code{type="samples"} return a list of arrays of
 samples from the posterior.
 }
@@ -27,12 +30,13 @@ Predict probabilities of component membership for a new data set.
 \details{
 For each row in the dataframe \code{data}, predict
 \itemize{
-  \item \code{p}: the probability of membership of the second
-  component conditional only on the observed covariates in the
-  prediction data set
-  \item \code{p}: the probability of membership of the second
-  component conditional on both the observed response and
-  covariates in the prediction data set
+  \item \code{p}: the posterior predictive probability of
+  membership of the second component (conditional only on the
+  observed covariates in the prediction data set)
+
+\item \code{p}: the posterior probability of membership of the
+  second component (conditional on both the observed response and
+  covariates in the prediction data set)
 }
 If \code{type="mean"} the function returns posterior means as a
 dataframe, otherwise it returns samples from the posterior as a

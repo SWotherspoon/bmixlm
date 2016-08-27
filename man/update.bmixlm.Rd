@@ -21,6 +21,6 @@ Updates and optionally refits a \code{\link{bmixlm}} fit.
 }
 \details{
 If the \code{betap} and \code{sigma} arguments are not specified,
-they are determined from the exisiting fit.
+they are determined from the existing fit.
 }
 

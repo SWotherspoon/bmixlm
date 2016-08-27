@@ -10,7 +10,8 @@ predictAll(object, type = c("mean", "samples"), data = NULL,
 \arguments{
 \item{object}{An object of class \code{bmixlm}}
 
-\item{type}{Whether to return the posterior means or samples from the posterior.}
+\item{type}{Whether to return the posterior means or samples from
+the posterior.}
 
 \item{data}{A dataframe for which predictions are required}
 
@@ -19,16 +20,17 @@ predictAll(object, type = c("mean", "samples"), data = NULL,
 \item{...}{Currently unused.}
 }
 \value{
-Returns a list or datafame with elements
+Returns a list or dataframe with elements
 \item{\code{y}}{vector of responses from data}
 \item{\code{y1}}{predicted values for the first component model}
 \item{\code{y2}}{predicted values for the second component model}
 \item{\code{r1}}{residuals for the first component model}
 \item{\code{r2}}{residuals for the second component model}
-\item{\code{p}}{probabilities of membership of the second component}
-\item{\code{q}}{probabilities of membership of the second component,
-conditional on the observed response}
-If \code{type="mean"} return a datafame of posterior means is
+\item{\code{p}}{posterior predictive probabilities of membership
+of the second component}
+\item{\code{q}}{posterior probabilities of membership of the
+second component}
+If \code{type="mean"} return a dataframe of posterior means is
 returned, and if \code{type="samples"} return a list of arrays of
 samples from the posterior.
 }
@@ -42,8 +44,8 @@ This function returns the predicted values that are conditional
 only on the responses for the data to which the model is fitted:
 \itemize{
   \item the predicted values for the two component linear models
-  \item the probability p of membership of the second component,
-  independent of the observed response in the prediction data set
+  \item the posterior predictive probability p of membership of
+  the second component
 }
 together with the predicted values conditional on the responses
 from both the data to which the model is fitted, and the
@@ -51,9 +53,14 @@ prediction data set:
 \itemize{
   \item the residuals or prediction error given the observed
   response in the prediction data
-  \item the probability q of membership of the second component,
-  conditional on the observed response in the prediction data set
+  \item the posterior probability q of membership of the second
+  component,
 }
+The posterior predictive probability p predicts the probability
+that a new response will be drawn from the second component, the
+posterior probability q predicts the probability that the observed
+response was drawn from the second component.
+
 If \code{type="mean"} the function returns posterior means as a
 dataframe, otherwise it returns samples from the posterior as a
 list of arrays.
