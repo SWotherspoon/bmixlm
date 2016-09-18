@@ -65,9 +65,11 @@ bmixlm <- function(formula1,formula2,formulap,data,
     #V <- solve(crossprod(X))
     #beta <- drop(V%*%crossprod(X,y) + t(chol(V))%*%rnorm(ncol(X),0,sigma))
     QR <- qr(X)
-    Q <- qr.Q(QR)
-    R <- qr.R(QR)
-    beta <- drop(solve(R,crossprod(Q,y)+rnorm(ncol(R),0,sigma)))
+    ks <- seq_len(QR$rank)
+    Q <- qr.Q(QR)[,ks]
+    R <- qr.R(QR)[ks,ks]
+    beta <- double(ncol(X))
+    beta[QR$pivot[ks]] <- drop(solve(R,crossprod(Q,y)+rnorm(QR$rank,0,sigma)))
     r <- y-X%*%beta
     tau <- rgamma(1,tau.prior[1]+length(r)/2,tau.prior[2]+crossprod(r)/2)
     list(beta=beta,sigma=1/sqrt(tau))
