@@ -62,8 +62,12 @@ bmixlm <- function(formula1,formula2,formulap,data,
 
   ## Gibbs sampler for the linear model
   gibbs.reg <- function(y,X,sigma) {
-    V <- solve(crossprod(X))
-    beta <- drop(V%*%crossprod(X,y) + t(chol(V))%*%rnorm(ncol(X),0,sigma))
+    #V <- solve(crossprod(X))
+    #beta <- drop(V%*%crossprod(X,y) + t(chol(V))%*%rnorm(ncol(X),0,sigma))
+    QR <- qr(X)
+    Q <- qr.Q(QR)
+    R <- qr.R(QR)
+    beta <- drop(solve(R,crossprod(Q,y)+rnorm(ncol(R),0,sigma)))
     r <- y-X%*%beta
     tau <- rgamma(1,tau.prior[1]+length(r)/2,tau.prior[2]+crossprod(r)/2)
     list(beta=beta,sigma=1/sqrt(tau))
@@ -163,6 +167,7 @@ bmixlm <- function(formula1,formula2,formulap,data,
          restart=list(sigma=sigma,betap=betap,b=b)),
     class="bmixlm")
 }
+
 
 ##' Print method for objects of class \code{bmixlm}
 ##'
