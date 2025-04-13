@@ -4,8 +4,16 @@
 \alias{bmixlm}
 \title{Binary Mixture of Linear Models}
 \usage{
-bmixlm(formula1, formula2, formulap, data, nsamp = 1000, nthin = 3,
-  tau.prior = c(0.01, 0.01), start = list(sigma = c(1e-04, 1e-04)))
+bmixlm(
+  formula1,
+  formula2,
+  formulap,
+  data,
+  nsamp = 1000,
+  nthin = 3,
+  tau.prior = c(0.01, 0.01),
+  start = list(sigma = c(1e-04, 1e-04))
+)
 }
 \arguments{
 \item{formula1}{An object of class formula: a symbolic description
@@ -30,20 +38,22 @@ precision of the two models.}
 }
 \value{
 An object of class \code{bmixlm} with columns
-\item{call}{the matched call}
-\item{nsamp}{the number of samples retained after thinning}
-\item{beta1}{matrix of samples of the coefficients of the first
-linear model}
-\item{beta2}{matrix of samples of the coefficients of the second
-linear model}
-\item{betap}{matrix of samples of the coefficients of the probit
-model}
-\item{sigma}{two column matrix of samples of the standard
-deviations of the errors for the two models}
-\item{data}{the input dataframe}
-\item{pW}{effective degrees of freedom for the fitted model}
-\item{WAIC}{WAIC for the fitted model}
-\item{restart}{final sigma, betap and b for restart purposes}
+\itemize{
+\item \strong{call}: the matched call
+\item \strong{nsamp}: the number of samples retained after thinning
+\item \strong{beta1}: matrix of samples of the coefficients of the first
+linear model
+\item \strong{beta2}: matrix of samples of the coefficients of the second
+linear model
+\item \strong{betap}: matrix of samples of the coefficients of the probit
+model
+\item \strong{sigma}: two column matrix of samples of the standard
+deviations of the errors for the two models
+\item \strong{data}: the input dataframe
+\item \strong{pW}: effective degrees of freedom for the fitted model
+\item \strong{WAIC}: WAIC for the fitted model
+\item \strong{restart}: final sigma, betap and b for restart purposes
+}
 }
 \description{
 Fits a binary mixture of linear models in which the probability of
@@ -64,7 +74,6 @@ model is sampled by the method of Albert and Chib.
 }
 \references{
 Albert, J. H., & Chib, S. (1993). Bayesian analysis of
-  binary and polychotomous response data. Journal of the American
-  statistical Association, 88(422), 669-679.
+binary and polychotomous response data. Journal of the American
+statistical Association, 88(422), 669-679.
 }
-

@@ -4,8 +4,7 @@
 \alias{plot.bmixlm}
 \title{Trace plots for \code{bmixlm} objects}
 \usage{
-\method{plot}{bmixlm}(x, which = c("probit", "comp1", "comp2", "error"),
-  main = which, ...)
+\method{plot}{bmixlm}(x, which = c("probit", "comp1", "comp2", "error"), main = which, ...)
 }
 \arguments{
 \item{x}{An object of class \code{bmixlm}}
@@ -25,11 +24,10 @@ coefficients for the two component models, the coefficients for
 the probit model, and the error standard deviations from the two
 component models. The \code{which} argument determines which of
 these parameter sets is plotted:
-\describe{
-  \item{\code{"comp1"}}{coefficients for the first component model}
-  \item{\code{"comp2"}}{coefficients for the second component model}
-  \item{\code{"probit"}}{coefficients for the probit binary model}
-  \item{\code{"error"}}{error standard deviations for the two components}
+\itemize{
+\item \strong{"comp1"}: coefficients for the first component model
+\item \strong{"comp2"}: coefficients for the second component model
+\item \strong{"probit"}: coefficients for the probit binary model
+\item \strong{"error"}: error standard deviations for the two components
 }
 }
-

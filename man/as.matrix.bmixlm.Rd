@@ -17,4 +17,3 @@ A matrix of samples of model parameters.
 \description{
 Returns all the samples of the parameters as one large matrix.
 }
-

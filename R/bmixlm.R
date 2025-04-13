@@ -26,21 +26,22 @@
 ##' @param tau.prior Parameters of the (common) Gamma prior for the
 ##'   precision of the two models.
 ##' @param start A list of initial values for sigma, betap and b
-##' @return An object of class \code{bmixlm} with columns
-##' \item{call}{the matched call}
-##' \item{nsamp}{the number of samples retained after thinning}
-##' \item{beta1}{matrix of samples of the coefficients of the first
-##' linear model}
-##' \item{beta2}{matrix of samples of the coefficients of the second
-##' linear model}
-##' \item{betap}{matrix of samples of the coefficients of the probit
-##' model}
-##' \item{sigma}{two column matrix of samples of the standard
-##' deviations of the errors for the two models}
-##' \item{data}{the input dataframe}
-##' \item{pW}{effective degrees of freedom for the fitted model}
-##' \item{WAIC}{WAIC for the fitted model}
-##' \item{restart}{final sigma, betap and b for restart purposes}
+##' @return An object of class `bmixlm` with columns
+##' 
+##' - **call**: the matched call
+##' - **nsamp**: the number of samples retained after thinning
+##' - **beta1**: matrix of samples of the coefficients of the first
+##' linear model
+##' - **beta2**: matrix of samples of the coefficients of the second
+##' linear model
+##' - **betap**: matrix of samples of the coefficients of the probit
+##' model
+##' - **sigma**: two column matrix of samples of the standard
+##' deviations of the errors for the two models
+##' - **data**: the input dataframe
+##' - **pW**: effective degrees of freedom for the fitted model
+##' - **WAIC**: WAIC for the fitted model
+##' - **restart**: final sigma, betap and b for restart purposes
 ##' @references
 ##'   Albert, J. H., & Chib, S. (1993). Bayesian analysis of
 ##'   binary and polychotomous response data. Journal of the American
@@ -171,10 +172,10 @@ bmixlm <- function(formula1,formula2,formulap,data,
 }
 
 
-##' Print method for objects of class \code{bmixlm}
+##' Print method for objects of class `bmixlm`
 ##'
 ##' @title Printing bmixlm fits
-##' @param x An object of class \code{\link{bmixlm}}
+##' @param x An object of class `bmixlm`
 ##' @param ... Currently ignored
 ##' @export
 print.bmixlm <- function(x,...) {
@@ -184,26 +185,27 @@ print.bmixlm <- function(x,...) {
       "\nSamples: ",x$nsamp,"\n\n",sep ="")
 }
 
-##' Computes a list of summary statistics for the \code{bmixlm} model
-##' fit \code{object}.
+##' Computes a list of summary statistics for the `bmixlm` model
+##' fit `object`.
 ##'
-##' @title Summarizing \code{bmixlm} Fits
-##' @param object An object of class \code{\link{bmixlm}}
-##' @param x An object of class \code{\link{bmixlm}}
+##' @title Summarizing `bmixlm` Fits
+##' @param object An object of class `bmixlm`
+##' @param x An object of class `bmixlm`
 ##' @param digits The number of significant digits to use when printing.
 ##' @param ... Currently ignored
-##' @return Returns an object of class \code{summary.bmixlm}, with components
-##' \item{\code{call}}{The original \code{bmixlm} call}
-##' \item{\code{nsamp}}{The number of Gibbs samples drawn}
-##' \item{\code{beta1}}{Summary table for the coefficients for the linear model for the first component}
-##' \item{\code{beta2}}{Summary table for the coefficients for the linear model for the second component}
-##' \item{\code{betap}}{Summary table for the coefficients for the probit model}
-##' \item{\code{sigma}}{Summary table for the standard deviations for the two linear models}
-##' \item{\code{vcov1}}{Variance covariance matrix of the coefficients for the linear model for the first component}
-##' \item{\code{vcov2}}{Variance covariance matrix of the coefficients for the linear model for the second component}
-##' \item{\code{vcovp}}{Variance covariance matrix of the coefficients for the probit model}
-##' \item{\code{pW}}{WAIC effective number of parameters}
-##' \item{\code{WAIC}}{WAIC}
+##' @return Returns an object of class `summary.bmixlm`, with components
+##' 
+##' - **call**: The original `bmixlm` call
+##' - **nsamp**: The number of Gibbs samples drawn
+##' - **beta1**: Summary table for the coefficients for the linear model for the first component
+##' - **beta2**: Summary table for the coefficients for the linear model for the second component
+##' - **betap**: Summary table for the coefficients for the probit model
+##' - **sigma**: Summary table for the standard deviations for the two linear models
+##' - **vcov1**: Variance covariance matrix of the coefficients for the linear model for the first component
+##' - **vcov2**: Variance covariance matrix of the coefficients for the linear model for the second component
+##' - **vcovp**: Variance covariance matrix of the coefficients for the probit model
+##' - **pW**: WAIC effective number of parameters
+##' - **WAIC**: WAIC
 ##' @importFrom stats sd quantile var
 ##' @export
 summary.bmixlm <- function(object,...) {
@@ -249,16 +251,16 @@ print.summary.bmixlm <- function(x,digits=max(3L,getOption("digits")-3L),...) {
 
 
 
-##' Updates and optionally refits a \code{\link{bmixlm}} fit.
+##' Updates and optionally refits a `bmixlm` fit.
 ##'
-##' If the \code{betap} and \code{sigma} arguments are not specified,
+##' If the `betap` and `sigma` arguments are not specified,
 ##' they are determined from the existing fit.
 ##'
-##' @title Update and Refit a \code{bmixlm} Model
-##' @param object An object of class \code{\link{bmixlm}}
+##' @title Update and Refit a `bmixlm` Model
+##' @param object An object of class `bmixlm`
 ##' @param ... Arguments to update
 ##' @param evaluate If true evaluate the new call else return the call.
-##' @return If \code{evaluate = TRUE} the fitted object, otherwise the updated call.
+##' @return If `evaluate = TRUE` the fitted object, otherwise the updated call.
 ##' @importFrom stats getCall update
 ##' @export
 update.bmixlm <- function (object,...,evaluate=TRUE) {
@@ -281,27 +283,26 @@ update.bmixlm <- function (object,...,evaluate=TRUE) {
 }
 
 
-##' Extract a set of model coefficients from a fitted \code{bmixlm} object.
+##' Extract a set of model coefficients from a fitted `bmixlm` object.
 ##'
 ##' The fitted object contains of four sets of parameters: the
 ##' coefficients for the two component models, the coefficients for
 ##' the probit model, and the error standard deviations from the two
-##' component models. The \code{which} argument determines which of
+##' component models. The `which` argument determines which of
 ##' these parameter sets is returned:
-##' \describe{
-##'   \item{\code{"comp1"}}{coefficients for the first component model}
-##'   \item{\code{"comp2"}}{coefficients for the second component model}
-##'   \item{\code{"probit"}}{coefficients for the probit binary model}
-##'   \item{\code{"error"}}{error standard deviations for the two components}
-##' }
+##' 
+##' - **"comp1"**: coefficients for the first component model
+##' - **"comp2"**: coefficients for the second component model
+##' - **"probit"**: coefficients for the probit binary model
+##' - **"error"**: error standard deviations for the two components
 ##'
-##' @title Coefficients of a \code{bmixlm} Object
-##' @param object An object of class \code{bmixlm}
+##' @title Coefficients of a `bmixlm` Object
+##' @param object An object of class `bmixlm`
 ##' @param which The parameter set to extract (see details).
 ##' @param type Whether to return the posterior mean or samples from the posterior.
 ##' @param ... Currently unused.
-##' @return If \code{type="mean"} the coefficients are returned as a
-##'   vector, and if \code{type="samples"} the coefficients are
+##' @return If `type="mean"` the coefficients are returned as a
+##'   vector, and if `type="samples"` the coefficients are
 ##'   returned as an array of samples from the posterior
 ##' @export
 coef.bmixlm <- function(object,
@@ -317,26 +318,25 @@ coef.bmixlm <- function(object,
   if(type=="mean") colMeans(cf) else cf
 }
 
-##' Extract a model matrix for one component of a \code{bmixlm} object.
+##' Extract a model matrix for one component of a `bmixlm` object.
 ##'
-##' A \code{bmixlm} object depends upon three model matrices: the
+##' A `bmixlm` object depends upon three model matrices: the
 ##' matrices for the two component models and the model matrix for
-##' the probit model. The \code{which} argument determines which of
+##' the probit model. The `which` argument determines which of
 ##' these matrices is returned:
-##' \describe{
-##'   \item{\code{"comp1"}}{the model matrix for the first component model}
-##'   \item{\code{"comp2"}}{the model matrix for the second component model}
-##'   \item{\code{"probit"}}{the model matrix for the probit binary model}
-##' }
+##' 
+##' - **"comp1"**: the model matrix for the first component model
+##' - **"comp2"**: the model matrix for the second component model
+##' - **"probit"**: the model matrix for the probit binary model
 ##'
-##' If a dataframe is supplied via the \code{data} argument, it is
+##' If a dataframe is supplied via the `data` argument, it is
 ##' used to construct the model matrix, otherwise the model matrix is
 ##' constructed from the data used to generate the fitted object
 ##'
-##' @title Model matrices for a \code{bmixlm} Object
-##' @param object An object of class \code{bmixlm}
+##' @title Model matrices for a `bmixlm` Object
+##' @param object An object of class `bmixlm`
 ##' @param which The parameter set to extract (see details).
-##' @param data A data frame or \code{NULL}.
+##' @param data A data frame or `NULL`.
 ##' @param ... Currently unused.
 ##' @return The model matrix for the selected model component.
 ##' @export
@@ -360,48 +360,50 @@ model.matrix.bmixlm <- function(object,which=c("probit","comp1","comp2"),data=NU
 ##'
 ##' This function returns the predicted values that are conditional
 ##' only on the responses for the data to which the model is fitted:
-##' \itemize{
-##'   \item the predicted values for the two component linear models
-##'   \item the posterior predictive probability p of membership of
+##' 
+##' - the predicted values for the two component linear models
+##' - the posterior predictive probability p of membership of
 ##'   the second component
-##' }
+##'
 ##' together with the predicted values conditional on the responses
 ##' from both the data to which the model is fitted, and the
 ##' prediction data set:
-##' \itemize{
-##'   \item the residuals or prediction error given the observed
+##' 
+##' - the residuals or prediction error given the observed
 ##'   response in the prediction data
-##'   \item the posterior probability q of membership of the second
+##' - the posterior probability q of membership of the second
 ##'   component,
-##' }
+##'
 ##' The posterior predictive probability p predicts the probability
 ##' that a new response will be drawn from the second component, the
 ##' posterior probability q predicts the probability that the observed
 ##' response was drawn from the second component.
 ##'
-##' If \code{type="mean"} the function returns posterior means as a
+##' If `type="mean"` the function returns posterior means as a
 ##' dataframe, otherwise it returns samples from the posterior as a
 ##' list of arrays.
 ##'
-##' @title Predicted Values for a \code{bmixlm} Object
-##' @param object An object of class \code{bmixlm}
+##' @title Predicted Values for a `bmixlm` Object
+##' @param object An object of class `bmixlm`
 ##' @param type Whether to return the posterior means or samples from
 ##' the posterior.
 ##' @param data A dataframe for which predictions are required
 ##' @param standardize Whether to standardize the residuals.
 ##' @param ... Currently unused.
 ##' @return Returns a list or dataframe with elements
-##' \item{\code{y}}{vector of responses from data}
-##' \item{\code{y1}}{predicted values for the first component model}
-##' \item{\code{y2}}{predicted values for the second component model}
-##' \item{\code{r1}}{residuals for the first component model}
-##' \item{\code{r2}}{residuals for the second component model}
-##' \item{\code{p}}{posterior predictive probabilities of membership
-##' of the second component}
-##' \item{\code{q}}{posterior probabilities of membership of the
-##' second component}
-##' If \code{type="mean"} return a dataframe of posterior means is
-##' returned, and if \code{type="samples"} return a list of arrays of
+##' 
+##' - **y**: vector of responses from data
+##' - **y1**: predicted values for the first component model
+##' - **y2**: predicted values for the second component model
+##' - **r1**: residuals for the first component model
+##' - **r2**: residuals for the second component model
+##' - **p**: posterior predictive probabilities of membership
+##'   of the second component
+##' - **q**: posterior probabilities of membership of the
+##'   second component
+##' 
+##' If `type="mean"` return a dataframe of posterior means is
+##' returned, and if `type="samples"` return a list of arrays of
 ##' samples from the posterior.
 ##' @importFrom stats as.formula model.frame model.matrix model.response dnorm pnorm
 ##' @export
@@ -457,22 +459,24 @@ predictAll <- function(object,type=c("mean","samples"),data=NULL,standardize=FAL
 ##' Calculate the fitted values from the two component models, and the
 ##' probabilities of membership of the second component.
 ##'
-##' If \code{type="mean"} the function returns posterior mean
+##' If `type="mean"` the function returns posterior mean
 ##' quantities as a dataframe, otherwise it returns samples from the
 ##' posterior as a list of arrays.
 ##'
-##' @title Fitted Values for a \code{bmixlm} Object
-##' @param object An object of class \code{bmixlm}
+##' @title Fitted Values for a `bmixlm` Object
+##' @param object An object of class `bmixlm`
 ##' @param type Whether to return the posterior mean or samples from
 ##'   the posterior.
 ##' @param ... Currently unused.
 ##' @return Returns a list or dataframe with elements
-##' \item{\code{y1}}{predicted values for the first component model}
-##' \item{\code{y2}}{predicted values for the second component model}
-##' \item{\code{p}}{posterior predictive probabilities of membership
-##' of the second component}
-##' If \code{type="mean"} return a dataframe of posterior means is
-##' returned, and if \code{type="samples"} return a list of arrays of
+##' 
+##' - **y1**: predicted values for the first component model
+##' - **y2**: predicted values for the second component model
+##' - **p**: posterior predictive probabilities of membership
+##'   of the second component
+##' 
+##' If `type="mean"` return a dataframe of posterior means is
+##' returned, and if `type="samples"` return a list of arrays of
 ##' samples from the posterior.
 ##' @importFrom stats as.formula model.frame model.matrix pnorm
 ##' @export
@@ -512,27 +516,29 @@ fitted.bmixlm <- function(object,type=c("mean","samples"),...) {
 ##' Calculate the residuals from the two component models, and the
 ##' probabilities of membership of the second component.
 ##'
-##' If \code{type="mean"} the function returns posterior mean
+##' If `type="mean"` the function returns posterior mean
 ##' quantities as a dataframe, otherwise it returns samples from the
 ##' posterior as a list of arrays.
 ##'
-##' @title Residuals for a \code{bmixlm} Object
-##' @param object An object of class \code{bmixlm}
+##' @title Residuals for a `bmixlm` Object
+##' @param object An object of class `bmixlm`
 ##' @param type Whether to return the posterior mean or samples from
 ##' the posterior.
 ##' @param standardize Whether to standardize the residuals.
 ##' @param ... Currently unused.
 ##' @return Returns a list or dataframe with elements
-##' \item{\code{y1}}{residuals for the first component model}
-##' \item{\code{y2}}{residuals for the second component model}
-##' \item{\code{p}}{posterior predictive probabilities of membership
-##' of the second component}
-##' \item{\code{q}}{posterior probabilities of membership of the
-##' second component}
-##' \item{\code{b}}{binary indicators of membership of the second component,
-##' conditional on the observed response}
-##' If \code{type="mean"} return a dataframe of posterior means is
-##' returned, and if \code{type="samples"} return a list of arrays of
+##' 
+##' - **y1**: residuals for the first component model
+##' - **y2**: residuals for the second component model
+##' - **p**: posterior predictive probabilities of membership
+##'   of the second component
+##' - **q**: posterior probabilities of membership of the
+##'   second component
+##' - **b**: binary indicators of membership of the second component,
+##'   conditional on the observed response
+##' 
+##' If `type="mean"` return a dataframe of posterior means is
+##' returned, and if `type="samples"` return a list of arrays of
 ##' samples from the posterior.
 ##' @importFrom stats as.formula model.frame model.response model.matrix pnorm
 ##' @export
@@ -583,25 +589,27 @@ residuals.bmixlm <- function(object,type=c("mean","samples"),standardize=FALSE,.
 ##' original observed data and the prediction covariates only. An
 ##' expanded range of predictions that include quantities conditional
 ##' on the observed responses in the prediction data can be calculated
-##' with \code{\link{predictAll}}.
+##' with `predictAll`.
 ##'
-##' If \code{type="mean"} the function returns posterior mean
+##' If `type="mean"` the function returns posterior mean
 ##' quantities as a dataframe, otherwise it returns samples from the
 ##' posterior as a list of arrays.
 ##'
-##' @title Predicted Values for a \code{bmixlm} Object
-##' @param object An object of class \code{bmixlm}
+##' @title Predicted Values for a `bmixlm` Object
+##' @param object An object of class `bmixlm`
 ##' @param newdata A dataframe for which predictions are required
 ##' @param type Whether to return the posterior mean or samples
 ##' from the posterior.
 ##' @param ... Currently unused.
 ##' @return Returns a list or dataframe with elements
-##' \item{\code{y1}}{predicted values for the first component model}
-##' \item{\code{y2}}{predicted values for the second component model}
-##' \item{\code{p}}{posterior predictive probabilities of membership
-##' of the second component}
-##' If \code{type="mean"} return a dataframe of posterior means is
-##' returned, and if \code{type="samples"} return a list of arrays of
+##' 
+##' - **y1**: predicted values for the first component model
+##' - **y2**: predicted values for the second component model
+##' - **p**: posterior predictive probabilities of membership
+##'   of the second component
+##' 
+##' If `type="mean"` return a dataframe of posterior means is
+##' returned, and if `type="samples"` return a list of arrays of
 ##' samples from the posterior.
 ##' @importFrom stats as.formula model.frame model.matrix pnorm
 ##' @export
@@ -635,25 +643,24 @@ predict.bmixlm <- function(object,newdata=NULL,type=c("mean","samples"),...) {
 }
 
 
-##' Plot a trace plot of a set of parameters from a \code{bmixlm} object.
+##' Plot a trace plot of a set of parameters from a `bmixlm` object.
 ##'
 ##' The fitted object contains of four sets of parameters: the
 ##' coefficients for the two component models, the coefficients for
 ##' the probit model, and the error standard deviations from the two
-##' component models. The \code{which} argument determines which of
+##' component models. The `which` argument determines which of
 ##' these parameter sets is plotted:
-##' \describe{
-##'   \item{\code{"comp1"}}{coefficients for the first component model}
-##'   \item{\code{"comp2"}}{coefficients for the second component model}
-##'   \item{\code{"probit"}}{coefficients for the probit binary model}
-##'   \item{\code{"error"}}{error standard deviations for the two components}
-##' }
+##' 
+##' - **"comp1"**: coefficients for the first component model
+##' - **"comp2"**: coefficients for the second component model
+##' - **"probit"**: coefficients for the probit binary model
+##' - **"error"**: error standard deviations for the two components
 ##'
-##' @title Trace plots for \code{bmixlm} objects
-##' @param x An object of class \code{bmixlm}
+##' @title Trace plots for `bmixlm` objects
+##' @param x An object of class `bmixlm`
 ##' @param which The coefficient set to plot
 ##' @param main The main title for the plot
-##' @param ... Additional options to \code{plot.ts}.
+##' @param ... Additional options to `plot.ts`.
 ##' @importFrom graphics plot
 ##' @importFrom stats as.ts coef
 ##' @export
@@ -664,8 +671,8 @@ plot.bmixlm <- function(x,which=c("probit","comp1","comp2","error"),main=which,.
 
 ##' Returns all the samples of the parameters as one large matrix.
 ##'
-##' @title Convert \code{bmixlm} object to a matrix
-##' @param x An object of class \code{bmixlm}.
+##' @title Convert `bmixlm` object to a matrix
+##' @param x An object of class `bmixlm`.
 ##' @param ... Currently ignored.
 ##' @return A matrix of samples of model parameters.
 ##' @importFrom stats setNames
@@ -682,32 +689,34 @@ as.matrix.bmixlm <- function(x,...) {
 
 ##' Predict probabilities of component membership for a new data set.
 ##'
-##' For each row in the dataframe \code{data}, predict
-##' \itemize{
-##'   \item \code{p}: the posterior predictive probability of
+##' For each row in the dataframe `data`, predict
+##' 
+##' - **p**: the posterior predictive probability of
 ##'   membership of the second component (conditional only on the
 ##'   observed covariates in the prediction data set)
 ##'
-##'   \item \code{p}: the posterior probability of membership of the
+##' - **p**: the posterior probability of membership of the
 ##'   second component (conditional on both the observed response and
 ##'   covariates in the prediction data set)
-##' }
-##' If \code{type="mean"} the function returns posterior means as a
+##'
+##' If `type="mean"` the function returns posterior means as a
 ##' dataframe, otherwise it returns samples from the posterior as a
 ##' list of arrays.
 ##'
 ##' @title Predicted Probabilities of Component Membership
-##' @param object An object of class \code{bmixlm}
+##' @param object An object of class `bmixlm`
 ##' @param type Whether to return the posterior means or samples
 ##' from the posterior.
 ##' @param data A dataframe for which predictions are required.
 ##' @return Returns a list or dataframe with elements
-##' \item{\code{p}}{posterior predictive probabilities of membership
-##' of the second component}
-##' \item{\code{q}}{posterior probabilities of membership of the
-##' second component}
-##' If \code{type="mean"} return a dataframe of posterior means is
-##' returned, and if \code{type="samples"} return a list of arrays of
+##' 
+##' - **p**: posterior predictive probabilities of membership
+##'   of the second component
+##' - **q**: posterior probabilities of membership of the
+##'   second component
+##' 
+##' If `type="mean"` return a dataframe of posterior means is
+##' returned, and if `type="samples"` return a list of arrays of
 ##' samples from the posterior.
 ##' @importFrom stats as.formula model.frame model.matrix model.response dnorm pnorm
 ##' @export
@@ -747,17 +756,17 @@ classify <- function(object,type=c("mean","samples"),data=NULL) {
 ##' New observations are simulated from the posterior predictive
 ##' distribution.
 ##'
-##' If \code{nsim} is not \code{NULL}, \code{update} is called to
-##' generate \code{nsim} new samples from the posterior, and new
+##' If `nsim` is not `NULL`, `update` is called to
+##' generate `nsim` new samples from the posterior, and new
 ##' observations are generated from these. Otherwise new observations
 ##' are generated from the samples contained in the fitted object.
 ##'
-##' @title Simulate Responses from a \code{bmixlm} Object
-##' @param object An object of class \code{bmixlm}.
+##' @title Simulate Responses from a `bmixlm` Object
+##' @param object An object of class `bmixlm`.
 ##' @param nsim Number of response vectors to simulate.
 ##' @param seed An object specifying if and how the random number
 ##'   generator should be initialized.
-##' @param ... Additional arguments to be passed to \code{update}.
+##' @param ... Additional arguments to be passed to `update`.
 ##' @return A dataframe of simulated responses.
 ##' @importFrom stats as.formula model.frame model.matrix runif rnorm simulate
 ##' @export

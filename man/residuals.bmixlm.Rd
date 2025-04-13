@@ -4,8 +4,7 @@
 \alias{residuals.bmixlm}
 \title{Residuals for a \code{bmixlm} Object}
 \usage{
-\method{residuals}{bmixlm}(object, type = c("mean", "samples"),
-  standardize = FALSE, ...)
+\method{residuals}{bmixlm}(object, type = c("mean", "samples"), standardize = FALSE, ...)
 }
 \arguments{
 \item{object}{An object of class \code{bmixlm}}
@@ -19,14 +18,17 @@ the posterior.}
 }
 \value{
 Returns a list or dataframe with elements
-\item{\code{y1}}{residuals for the first component model}
-\item{\code{y2}}{residuals for the second component model}
-\item{\code{p}}{posterior predictive probabilities of membership
-of the second component}
-\item{\code{q}}{posterior probabilities of membership of the
-second component}
-\item{\code{b}}{binary indicators of membership of the second component,
-conditional on the observed response}
+\itemize{
+\item \strong{y1}: residuals for the first component model
+\item \strong{y2}: residuals for the second component model
+\item \strong{p}: posterior predictive probabilities of membership
+of the second component
+\item \strong{q}: posterior probabilities of membership of the
+second component
+\item \strong{b}: binary indicators of membership of the second component,
+conditional on the observed response
+}
+
 If \code{type="mean"} return a dataframe of posterior means is
 returned, and if \code{type="samples"} return a list of arrays of
 samples from the posterior.
@@ -40,4 +42,3 @@ If \code{type="mean"} the function returns posterior mean
 quantities as a dataframe, otherwise it returns samples from the
 posterior as a list of arrays.
 }
-

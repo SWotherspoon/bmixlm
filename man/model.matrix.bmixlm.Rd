@@ -4,8 +4,7 @@
 \alias{model.matrix.bmixlm}
 \title{Model matrices for a \code{bmixlm} Object}
 \usage{
-\method{model.matrix}{bmixlm}(object, which = c("probit", "comp1", "comp2"),
-  data = NULL, ...)
+\method{model.matrix}{bmixlm}(object, which = c("probit", "comp1", "comp2"), data = NULL, ...)
 }
 \arguments{
 \item{object}{An object of class \code{bmixlm}}
@@ -27,14 +26,13 @@ A \code{bmixlm} object depends upon three model matrices: the
 matrices for the two component models and the model matrix for
 the probit model. The \code{which} argument determines which of
 these matrices is returned:
-\describe{
-  \item{\code{"comp1"}}{the model matrix for the first component model}
-  \item{\code{"comp2"}}{the model matrix for the second component model}
-  \item{\code{"probit"}}{the model matrix for the probit binary model}
+\itemize{
+\item \strong{"comp1"}: the model matrix for the first component model
+\item \strong{"comp2"}: the model matrix for the second component model
+\item \strong{"probit"}: the model matrix for the probit binary model
 }
 
 If a dataframe is supplied via the \code{data} argument, it is
 used to construct the model matrix, otherwise the model matrix is
 constructed from the data used to generate the fitted object
 }
-

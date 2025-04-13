@@ -4,8 +4,7 @@
 \alias{predict.bmixlm}
 \title{Predicted Values for a \code{bmixlm} Object}
 \usage{
-\method{predict}{bmixlm}(object, newdata = NULL, type = c("mean",
-  "samples"), ...)
+\method{predict}{bmixlm}(object, newdata = NULL, type = c("mean", "samples"), ...)
 }
 \arguments{
 \item{object}{An object of class \code{bmixlm}}
@@ -19,10 +18,13 @@ from the posterior.}
 }
 \value{
 Returns a list or dataframe with elements
-\item{\code{y1}}{predicted values for the first component model}
-\item{\code{y2}}{predicted values for the second component model}
-\item{\code{p}}{posterior predictive probabilities of membership
-of the second component}
+\itemize{
+\item \strong{y1}: predicted values for the first component model
+\item \strong{y2}: predicted values for the second component model
+\item \strong{p}: posterior predictive probabilities of membership
+of the second component
+}
+
 If \code{type="mean"} return a dataframe of posterior means is
 returned, and if \code{type="samples"} return a list of arrays of
 samples from the posterior.
@@ -36,10 +38,9 @@ This function returns the predicted values conditional on the
 original observed data and the prediction covariates only. An
 expanded range of predictions that include quantities conditional
 on the observed responses in the prediction data can be calculated
-with \code{\link{predictAll}}.
+with \code{predictAll}.
 
 If \code{type="mean"} the function returns posterior mean
 quantities as a dataframe, otherwise it returns samples from the
 posterior as a list of arrays.
 }
-

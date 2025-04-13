@@ -29,4 +29,3 @@ generate \code{nsim} new samples from the posterior, and new
 observations are generated from these. Otherwise new observations
 are generated from the samples contained in the fitted object.
 }
-

@@ -16,10 +16,13 @@ from the posterior.}
 }
 \value{
 Returns a list or dataframe with elements
-\item{\code{p}}{posterior predictive probabilities of membership
-of the second component}
-\item{\code{q}}{posterior probabilities of membership of the
-second component}
+\itemize{
+\item \strong{p}: posterior predictive probabilities of membership
+of the second component
+\item \strong{q}: posterior probabilities of membership of the
+second component
+}
+
 If \code{type="mean"} return a dataframe of posterior means is
 returned, and if \code{type="samples"} return a list of arrays of
 samples from the posterior.
@@ -30,16 +33,15 @@ Predict probabilities of component membership for a new data set.
 \details{
 For each row in the dataframe \code{data}, predict
 \itemize{
-  \item \code{p}: the posterior predictive probability of
-  membership of the second component (conditional only on the
-  observed covariates in the prediction data set)
-
-\item \code{p}: the posterior probability of membership of the
-  second component (conditional on both the observed response and
-  covariates in the prediction data set)
+\item \strong{p}: the posterior predictive probability of
+membership of the second component (conditional only on the
+observed covariates in the prediction data set)
+\item \strong{p}: the posterior probability of membership of the
+second component (conditional on both the observed response and
+covariates in the prediction data set)
 }
+
 If \code{type="mean"} the function returns posterior means as a
 dataframe, otherwise it returns samples from the posterior as a
 list of arrays.
 }
-

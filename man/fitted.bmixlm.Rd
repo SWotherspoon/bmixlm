@@ -16,10 +16,13 @@ the posterior.}
 }
 \value{
 Returns a list or dataframe with elements
-\item{\code{y1}}{predicted values for the first component model}
-\item{\code{y2}}{predicted values for the second component model}
-\item{\code{p}}{posterior predictive probabilities of membership
-of the second component}
+\itemize{
+\item \strong{y1}: predicted values for the first component model
+\item \strong{y2}: predicted values for the second component model
+\item \strong{p}: posterior predictive probabilities of membership
+of the second component
+}
+
 If \code{type="mean"} return a dataframe of posterior means is
 returned, and if \code{type="samples"} return a list of arrays of
 samples from the posterior.
@@ -33,4 +36,3 @@ If \code{type="mean"} the function returns posterior mean
 quantities as a dataframe, otherwise it returns samples from the
 posterior as a list of arrays.
 }
-

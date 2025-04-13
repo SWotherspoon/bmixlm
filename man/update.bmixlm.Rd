@@ -7,7 +7,7 @@
 \method{update}{bmixlm}(object, ..., evaluate = TRUE)
 }
 \arguments{
-\item{object}{An object of class \code{\link{bmixlm}}}
+\item{object}{An object of class \code{bmixlm}}
 
 \item{...}{Arguments to update}
 
@@ -17,10 +17,9 @@
 If \code{evaluate = TRUE} the fitted object, otherwise the updated call.
 }
 \description{
-Updates and optionally refits a \code{\link{bmixlm}} fit.
+Updates and optionally refits a \code{bmixlm} fit.
 }
 \details{
 If the \code{betap} and \code{sigma} arguments are not specified,
 they are determined from the existing fit.
 }
-

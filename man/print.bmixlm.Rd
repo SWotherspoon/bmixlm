@@ -7,11 +7,10 @@
 \method{print}{bmixlm}(x, ...)
 }
 \arguments{
-\item{x}{An object of class \code{\link{bmixlm}}}
+\item{x}{An object of class \code{bmixlm}}
 
 \item{...}{Currently ignored}
 }
 \description{
 Print method for objects of class \code{bmixlm}
 }
-

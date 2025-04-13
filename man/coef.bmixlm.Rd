@@ -4,8 +4,12 @@
 \alias{coef.bmixlm}
 \title{Coefficients of a \code{bmixlm} Object}
 \usage{
-\method{coef}{bmixlm}(object, which = c("probit", "comp1", "comp2", "error"),
-  type = c("mean", "samples"), ...)
+\method{coef}{bmixlm}(
+  object,
+  which = c("probit", "comp1", "comp2", "error"),
+  type = c("mean", "samples"),
+  ...
+)
 }
 \arguments{
 \item{object}{An object of class \code{bmixlm}}
@@ -18,8 +22,8 @@
 }
 \value{
 If \code{type="mean"} the coefficients are returned as a
-  vector, and if \code{type="samples"} the coefficients are
-  returned as an array of samples from the posterior
+vector, and if \code{type="samples"} the coefficients are
+returned as an array of samples from the posterior
 }
 \description{
 Extract a set of model coefficients from a fitted \code{bmixlm} object.
@@ -30,11 +34,10 @@ coefficients for the two component models, the coefficients for
 the probit model, and the error standard deviations from the two
 component models. The \code{which} argument determines which of
 these parameter sets is returned:
-\describe{
-  \item{\code{"comp1"}}{coefficients for the first component model}
-  \item{\code{"comp2"}}{coefficients for the second component model}
-  \item{\code{"probit"}}{coefficients for the probit binary model}
-  \item{\code{"error"}}{error standard deviations for the two components}
+\itemize{
+\item \strong{"comp1"}: coefficients for the first component model
+\item \strong{"comp2"}: coefficients for the second component model
+\item \strong{"probit"}: coefficients for the probit binary model
+\item \strong{"error"}: error standard deviations for the two components
 }
 }
-
